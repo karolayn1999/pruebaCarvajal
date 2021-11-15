@@ -1,0 +1,402 @@
+<nav class="navbar navbar-expand-lg text-uppercase fixed-top" id="mainNav">
+  <div class="container" id="mainContainer">
+    <a class="navbar-brand letratitulo" href="#page-top"><strong>CARVAJAL</strong></a>
+    <div class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ms-auto">
+        <li class=" mx-lg-1 "><a class="nav-link py-3 px-0 letranavegacion" (click)="validatorClient()">Cliente</a></li>
+        <li class=" mx-lg-1 "><a class="nav-link py-3 px-0 letranavegacion" (click)="validatorAccount()">Cuenta</a></li>
+        <li class=" mx-lg-1 "><a class="nav-link py-3 px-0 letranavegacion" (click)="validatorCard()">Tarjeta</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<!-- Client Section-->
+<section class="page-section portfolio" style="margin-top: 10%;" id="user" *ngIf="client">
+  <div class="container">
+
+    <h2 class=" text-center text-uppercase text-primary ">Usuario</h2>
+
+    <!-- user -->
+    <div class="row justify-content-center">
+      <div class="row">
+        <div class="col-md-6">
+          <label for="userName">Tipo Documento:</label>
+          <select class="form-control tamañoSelect" [(ngModel)]="user.documentType" [disabled]="!validateInput">
+            <option [value]=""></option>
+            <option [value]="typeDocument.name" *ngFor="let typeDocument of typesDocuments">{{typeDocument.name}}
+            </option>
+          </select>
+          <div class="form-group">
+            <label for="name">Nombre:</label>
+            <input type="text" class="form-control tamañoSelect" [(ngModel)]="user.name" id="name" name="user_name">
+          </div>
+
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="name">Documento:</label>
+            <input type="text" (keypress)="kPNumeros($event)" class="form-control tamañoSelect"
+              [(ngModel)]="user.documentNumber" id="document" name="user_document" [disabled]="!validateInput">
+          </div>
+          <div>
+            <label>Fecha de Nacimiento:</label>
+            <br>
+            <input type="date" id="start" name="trip-start" [(ngModel)]="user.birthDate"
+              pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2021-12-31">
+
+          </div>
+
+
+        </div>
+        <div class="form-group buttonclient" style="margin-top: 12px">
+          <button *ngIf="!validator" (click)="saveUser(user)" class="btn btn-primary">Crear</button>
+          <button *ngIf="validator" (click)="updateUsers(user)" class="btn btn-primary">Modificar</button>
+          <button (click)="cancel()" class="btn btn-warning">Cancelar</button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="row col-md-12 contenedor">
+          <div class="col-md-6">
+            <input type="text" class="form-control contenedor2" name="searchCargo" placeholder="Buscar"
+              [(ngModel)]="searchUser">
+          </div>
+          <div class="col-md-6">
+            <select class="form-control contenedor2" name="tableUser" [(ngModel)]="itempageUsers">
+              <option value="5" selected="selected">Cargos por página</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="40">40</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+
+        <table width="60%" class="table table-striped table-hover" id="dataTables-example" id="tablaDistancia">
+          <thead>
+            <tr class="cabezaTabla2">
+              <th class="center">Nombre Usuario</th>
+              <th class="center">Tipo de Documento</th>
+              <th class="center">Numero Documento</th>
+              <th class="center">Activar/Inactivar</th>
+              <th class="center">Modificar</th>
+              <th class="center">Eliminar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let dato of dataClients |  paginate: { itemsPerPage: itempageUsers, currentPage: mp1, id: 'tableUser' }"
+              class="odd gradeX">
+              <td style="text-align: center;">{{dato.name}}</td>
+              <td style="text-align: center;">{{dato.documentType}}</td>
+              <td style="text-align: center;">{{dato.documentNumber}}</td>
+              <td style="text-align: center;" *ngIf="dato.status">
+                <a title="Inactivar" role="button">
+                  <img src="../../assets/switch-on.png" width="30" height="30" class="btnReportes"
+                    (click)="inactivateAndActiveUser(dato)">
+                </a>
+              </td>
+              <td style="text-align: center;" *ngIf="!dato.status">
+                <a title="Activar" role="button">
+                  <img src="../../assets/switch-off.png" width="30" height="30" class="btnReportes"
+                    (click)="inactivateAndActiveUser(dato)">
+                </a>
+              </td>
+              <td style="text-align: center;">
+                <a title="Modificar" role="button">
+                  <img src="../../assets/editar.png" width="30" height="30" class="btnReportes"
+                    (click)="updateUser(dato)">
+                </a>
+              </td>
+              <td style="text-align: center;">
+                <a title="Eliminar" role="button">
+                  <img src="../../assets/delete.png" width="30" height="30" class="btnReportes"
+                    (click)="deleteUser(dato)">
+                </a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="centrarpaginacion">
+          <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mp1 = $event"
+            id="tableUser"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+
+
+
+<!-- account Section-->
+<hr>
+<br>
+<br>
+<br>
+<section class="page-section text-dark mb-0 " id="account" *ngIf="account">
+  <div class="container">
+
+    <h2 class=" text-center text-uppercase text-success">Cuentas</h2>
+
+
+    <div class="row justify-content-center">
+      <div class="row">
+        <div class="col-md-6">
+
+          <div class="form-group">
+            <label for="nameUsuario">Tipo de Cuenta:</label>
+            <select class="form-control tamañoSelect" [(ngModel)]="accountNumber.accountType"
+              name="accountNumber.client" [disabled]="!validateInput1">
+              <option [value]=""></option>
+              <option [value]="type.name" *ngFor="let type of dataTypeAccount">{{type.name}}</option>
+            </select>
+          </div>
+
+
+          <div class="form-group">
+            <label for="nameUsuario">Cliente:</label>
+            <select class="form-control tamañoSelect" [(ngModel)]="accountNumber.client" name="accountNumber.client">
+              <option [value]=""></option>
+              <option [value]="clients.id" *ngFor="let clients of dataClientsActive">{{clients.name}}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="nameUsuario">Saldo:</label>
+            <input type="text" class="form-control tamañoSelect" (keypress)="kPNumeros($event)"
+              [(ngModel)]="accountNumber.totalBalance" id="nameUsuario" name="username">
+          </div>
+        </div>
+
+
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="nameUsuario">No Cuenta:</label>
+            <input type="text" class="form-control tamañoSelect" (keypress)="kPNumeros($event)"
+              [(ngModel)]="accountNumber.accountNumber" id="nameUsuario" [disabled]="!validateInput1" name="username">
+          </div>
+
+          <div class="form-group">
+            <label for="nameUsuario">Estado:</label>
+            <select class="form-control tamañoSelect" [(ngModel)]="accountNumber.status" name="usuario.cargo">
+              <option [value]=""></option>
+              <option [value]="account.name" *ngFor="let account of dataStatusAccount">{{account.name}}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="form-group" style="margin-top: 12px; text-align: center; margin-top: 5%;">
+        <button *ngIf="!validator" (click)="saveAccount(accountNumber)" class="btn btn-success">Crear</button>
+        <button *ngIf="validator" (click)="updateAccountNumber(accountNumber)"
+          class="btn btn-primary">Modificar</button>
+        <button (click)="cancel()" class="btn btn-warning">Cancelar</button>
+      </div>
+
+      <div class="row">
+        <div class="row col-md-12 contenedor">
+          <div class="col-md-6">
+            <input type="text" class="form-control contenedor2" name="searchUsuario" placeholder="Buscar"
+              [(ngModel)]="searchAccount">
+          </div>
+          <div class="col-md-6">
+            <select class="form-control contenedor2" name="tablaUsuarios" [(ngModel)]="itempageAccount">
+              <option value="5" selected="selected">Usuarios por página</option>
+              <option value="5">5</option>
+              <option value="10">10</option>
+              <option value="20">20</option>
+              <option value="40">40</option>
+              <option value="50">50</option>
+            </select>
+          </div>
+        </div>
+
+        <table width="60%" class="table table-striped table-hover" id="dataTables-example" id="tablaDistancia">
+          <thead>
+            <tr class="cabezaTabla2">
+              <th class="center">nombre cliente</th>
+              <th class="center">Tipo cuenta</th>
+              <th class="center">Estado</th>
+              <th class="center">Numero Cuenta</th>
+              <th class="center">Modificar</th>
+              <th class="center">Eliminar</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let dato of dataBankAccount | paginate: { itemsPerPage: itempageAccount, currentPage: mp1, id: 'tableAccount' }"
+              class="odd gradeX">
+              <td style="text-align: center;">{{dato.client.name}}</td>
+              <td style="text-align: center;">{{dato.accountType}}</td>
+              <td style="text-align: center;">{{dato.status}}</td>
+              <td style="text-align: center;">{{dato.accountNumber}}</td>
+              <td style="text-align: center;">
+                <a title="Modificar" role="button">
+                  <img src="../../assets/editar.png" width="30" height="30" class="btnReportes"
+                    (click)="updateAccount(dato)">
+                </a>
+              </td>
+              <td style="text-align: center;">
+                <a title="Eliminar" role="button">
+                  <img src="../../assets/delete.png" width="30" height="30" class="btnReportes"
+                    (click)="deleteAccount(dato)">
+                </a>
+              </td>
+
+            </tr>
+          </tbody>
+        </table>
+        <div class="centrarpaginacion">
+          <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mp = $event"
+            id="tableAccount"></pagination-controls>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr>
+<section class="page-section" id="mercancia" *ngIf="validatorCard">
+  <div class="container">
+
+    <h2 class=" text-center text-uppercase text-warning">Tarjeta Credito</h2>
+
+    <div class="row justify-content-center">
+      <div class="row">
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="nameUsuario">Tipo Tarjeta:</label>
+            <select class="form-control tamañoSelect" [(ngModel)]="cardCredit.cardType" name="cardCredit.cardType"
+              [disabled]="!validateInput2">
+              <option [value]=""></option>
+              <option [value]="type.name" *ngFor="let type of dataCardType">{{type.name}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nameUsuario">Cliente:</label>
+            <select class="form-control tamañoSelect" [(ngModel)]="cardCredit.idClients"
+              (click)="loadAccounts(cardCredit.idClients)" name="cardCredit.idAccount">
+              <option [value]=""></option>
+              <option [value]="client.id" *ngFor="let client of dataClientsActive">{{client.name}}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="nameUsuario">Cuentas:</label>
+            <select class="form-control tamañoSelect" [(ngModel)]="cardCredit.idAccount" name="cardCredit.idAccount">
+              <option [value]=""></option>
+              <option [value]="accounts.id" *ngFor="let accounts of dataAccounts">{{accounts.accountNumber}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="form-group">
+            <label for="nameProducto">Numero Tarjeta:</label>
+            <input type="text" class="form-control tamañoSelect" [(ngModel)]="cardCredit.cardNumber" id="nameProducto"
+              name="productname" [disabled]="!validateInput2">
+          </div>
+          <div class="form-group">
+            <label for="nameProducto">CVV:</label>
+            <input type="text" class="form-control tamañoSelect" [(ngModel)]="cardCredit.securityCode" id="nameProducto"
+              name="productname">
+          </div>
+
+          <div class="form-group">
+            <label for="nameProducto">Cupo:</label>
+            <input type="text" class="form-control tamañoSelect" [(ngModel)]="cardCredit.quota" id="nameProducto"
+              name="productname">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row justify-content-center">
+      <div class="row">
+        <div class="col-md-6">
+          <div>
+            <label> fecha de vencimiento: </label>
+            <br>
+            <input type="date" id="start" name="trip-start" [(ngModel)]="cardCredit.dueDate"
+              pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2021-12-31">
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div>
+            <label> fecha de emisión: </label>
+            <br>
+            <input type="date" id="start" name="trip-start" [(ngModel)]="cardCredit.issuanceDate"
+              pattern="[0-9]{4}-[0-9]{2}-[0-9]{2}" max="2021-12-31">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="form-group" *ngIf="!validator" style="margin-top: 12px; text-align: center; margin-top: 5%;">
+      <button (click)="saveCardCredit(cardCredit)" class="btn btn-warning">Crear</button>
+    </div>
+    <div class="form-group" *ngIf="validator" style="margin-top: 12px; text-align: center; margin-top: 5%;">
+      <button (click)="updateCardCredit(cardCredit)" class="btn btn-warning">Modificar</button>
+    </div>
+
+    <div class="row">
+      <div class="row col-md-12 contenedor">
+        <div class="col-md-6">
+          <input type="text" class="form-control contenedor2" name="searchCards" placeholder="Buscar"
+            [(ngModel)]="searchCards">
+        </div>
+        <div class="col-md-6">
+          <select class="form-control contenedor2" name="tablaMercancia" [(ngModel)]="itempageCards">
+            <option value="5" selected="selected">Mercancia por página</option>
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="20">20</option>
+            <option value="40">40</option>
+            <option value="50">50</option>
+          </select>
+        </div>
+      </div>
+
+      <table width="60%" class="table table-striped table-hover" id="dataTables-example" id="tablaDistancia">
+        <thead>
+          <tr class="cabezaTabla2">
+            <th class="center">Cliente</th>
+            <th class="center">Tipo Tarjeta</th>
+            <th class="center">Numero Tarjeta</th>
+            <th class="center">Fecha Vencimiento</th>
+            <th class="center">Numero Cuenta</th>
+            <th class="center">Tipo Cuenta</th>
+            <th class="center">Modificar</th>
+            <th class="center">Eliminar</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr
+            *ngFor="let dato of dataCreditCards | paginate: { itemsPerPage: itempageCards, currentPage: mp2, id: 'tableCards' }"
+            class="odd gradeX">
+            <td style="text-align: center;">{{dato.idAccount.client.name}}</td>
+            <td style="text-align: center;">{{dato.cardType}}</td>
+            <td style="text-align: center;">{{dato.cardNumber}}</td>
+            <td style="text-align: center;">{{dato.dueDate}}</td>
+            <td style="text-align: center;">{{dato.idAccount.accountNumber}}</td>
+            <td style="text-align: center;">{{dato.idAccount.accountType}}</td>
+            <td class="center">
+              <a title="Modificar" role="button">
+                <img src="../../assets/editar.png" width="30" height="30" class="btnReportes" (click)="loadCard(dato)">
+              </a>
+            </td>
+            <td>
+              <a title="Eliminar" role="button" (click)="deleteCard(dato)">
+                <img src="../../assets/delete.png" width="30" height="30" class="btnReportes">
+              </a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="centrarpaginacion">
+        <pagination-controls previousLabel="Anterior" nextLabel="Siguiente" (pageChange)="mp2 = $event" id="tableCards">
+        </pagination-controls>
+      </div>
+    </div>
+  </div>
+</section>
